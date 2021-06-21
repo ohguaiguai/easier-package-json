@@ -21,7 +21,11 @@ function provideDefinition(
   // 只处理package.json文件
   if (/\/package\.json$/.test(fileName)) {
     const json = document.getText();
+    // console.log('json', json);
     if (
+      // 'types/cript'.replace(/\//g,'\\/') -> "types\\/cript" ->
+      // new RegExp("(dependencies|devDependencies)":\\s*?\\{[\\s\\S]*?types\\/cript[\\s\\S]*?\\}, 'gm') ->
+      // /"(dependencies|devDependencies)":\s*?\{[\s\S]*?types\/cript[\s\S]*?\}/gm
       new RegExp(
         `"(dependencies|devDependencies)":\\s*?\\{[\\s\\S]*?${word.replace(
           /\//g,
