@@ -3,6 +3,7 @@
   "displayName": "easier-package.json",
   "description": "在package.json中方便的查看依赖的版本",
   "version": "0.0.1",
+  "icon": "images/json.svg",
   "engines": {
     "vscode": "^1.46.0"
   },
