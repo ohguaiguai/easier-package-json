@@ -3,6 +3,18 @@ import * as vscode from 'vscode';
 const path = require('path');
 const fs = require('fs');
 
+// 'types/cript'.replace(/\//g,'\\/') -> "types\\/cript" ->
+// new RegExp("(dependencies|devDependencies)":\\s*?\\{[\\s\\S]*?types\\/cript[\\s\\S]*?\\}, 'gm') ->
+// /"(dependencies|devDependencies)":\s*?\{[\s\S]*?types\/cript[\s\S]*?\}/gm
+const reg = (word: string) =>
+  new RegExp(
+    `"(dependencies|devDependencies)":\\s*?\\{[\\s\\S]*?${word.replace(
+      /\//g,
+      '\\/'
+    )}[\\s\\S]*?\\}`,
+    'gm'
+  );
+
 function provideDefinition(
   document: vscode.TextDocument,
   position: vscode.Position,
@@ -11,7 +23,7 @@ function provideDefinition(
   const fileName = document.fileName;
   const workDir = path.dirname(fileName);
   const word = document.getText(document.getWordRangeAtPosition(position));
-  const line = document.lineAt(position);
+  // const line = document.lineAt(position);
 
   // console.log('====== 进入 provideDefinition 方法 ======');
   // console.log('fileName: ' + fileName); // 当前文件完整路径
@@ -22,18 +34,7 @@ function provideDefinition(
   if (/\/package\.json$/.test(fileName)) {
     const json = document.getText();
     // console.log('json', json);
-    if (
-      // 'types/cript'.replace(/\//g,'\\/') -> "types\\/cript" ->
-      // new RegExp("(dependencies|devDependencies)":\\s*?\\{[\\s\\S]*?types\\/cript[\\s\\S]*?\\}, 'gm') ->
-      // /"(dependencies|devDependencies)":\s*?\{[\s\S]*?types\/cript[\s\S]*?\}/gm
-      new RegExp(
-        `"(dependencies|devDependencies)":\\s*?\\{[\\s\\S]*?${word.replace(
-          /\//g,
-          '\\/'
-        )}[\\s\\S]*?\\}`,
-        'gm'
-      ).test(json)
-    ) {
+    if (reg(word).test(json)) {
       let destPath = `${workDir}/node_modules/${word.replace(
         /"/g,
         ''
@@ -57,26 +58,18 @@ function provideHover(
   const fileName = document.fileName;
   const workDir = path.dirname(fileName);
   const word = document.getText(document.getWordRangeAtPosition(position));
-  console.log('--------------进入provideHover方法');
-  console.log(fileName, workDir, word);
+  // console.log('--------------进入provideHover方法');
+  // console.log(fileName, workDir, word);
   if (/\/package\.json$/.test(fileName)) {
     const json = document.getText();
-    if (
-      new RegExp(
-        `"(dependencies|devDependencies)":\\s*?\\{[\\s\\S]*?${word.replace(
-          /\//g,
-          '\\/'
-        )}[\\s\\S]*?\\}`,
-        'gm'
-      ).test(json)
-    ) {
+    if (reg(word).test(json)) {
       let destPath = `${workDir}/node_modules/${word.replace(
         /"/g,
         ''
       )}/package.json`;
       if (fs.existsSync(destPath)) {
         const content = require(destPath);
-        console.log('hover已生效');
+        // console.log('hover已生效');
         // hover内容支持markdown语法
         return new vscode.Hover(
           `* **名称**：${content.name}\n* **版本**：${content.version}\n* **许可协议**：${content.license}`
