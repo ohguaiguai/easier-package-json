@@ -4,7 +4,7 @@
   "description": "在package.json中方便的查看依赖的版本",
   "version": "0.0.1",
   "publisher": "onlyadaydreamer",
-  "icon": "images/json.svg",
+  "icon": "images/json.png",
   "engines": {
     "vscode": "^1.46.0"
   },
