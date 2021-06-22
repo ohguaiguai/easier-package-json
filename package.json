@@ -5,6 +5,7 @@
   "version": "0.0.1",
   "publisher": "onlyadaydreamer",
   "icon": "images/json.png",
+  "repository": "https://github.com/onlyadaydreamer/easier-package-json",
   "engines": {
     "vscode": "^1.46.0"
   },
